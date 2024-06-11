@@ -730,3 +730,157 @@ output :
         }
     }
 }
+
+- Example :  db.sales.aggregate([   
+    {$project :   
+        {   
+            quantity : 1,
+            values :   
+            {$filter :   
+                {  
+                    input : '$values',   
+                    as : 'value',   
+                    cond : {$gte : ['$$value', 50] }   
+                }   
+            }    
+        }
+    } 
+])
+
+-- Output :   
+[  
+  { _id: 1, quantity: 10, values: [ 74 ] },  
+  { _id: 2, quantity: 5, values: [ 68, 57 ] },  
+  { _id: 3, quantity: 6, values: [ 86, 90 ] },  
+  { _id: 4, quantity: 5, values: [ 68, 57 ] },  
+  { _id: 5, quantity: 5, values: [ 68, 57 ] }  
+]
+
+
+
+
+
+
+
+
+
+
+
+
+## Introduction to MongoDb Atlas
+
+- MongoDb Atlas is MongoDB's fully managed cloud database service.
+- It offers an easy way to deploy, manage and scale MongoDB databases in the cloud.
+- Atlas eliminates the need for manual setup and maintenance, allowing developers to focus on their applications.
+- It provides automated scaling options to accommodate growing workloads.
+- Atlas supports global clusters, enabling databases to be deployed across multiple regions for better data availability and reduced latency.
+
+
+
+
+
+
+### Hierarchy in MongoDB
+Organization -> Projects -> Clusters -> Database -> Collections -> Documents
+
+
+
+
+
+
+### Clusters
+
+- In MongoDB, a cluster refers to a group of interconnected servers (nodes) that work together to store and manage data.
+
+
+
+
+### Horizontal scaling (Scaling Out) (in NoSQL)
+
+- Add more resources like virtual machines to your system to spread out the workload across them.
+- Increases high availability.
+- Fewer periods of downtime
+- Easy to resize according to your needs
+
+
+
+
+
+### Vertical Scaling  (Scaling Up) (In MySQL)
+
+- Increase or decrease the capacity of existing services/instances.
+- No changes have to be made to the application code.
+- Less complex network.
+- Less complicated maintenance.
+
+
+
+
+
+
+
+
+## Working with MongoDB Drivers
+
+### Intoduction to MongoDB Drivers
+
+- Software Libraries that allow applications to interact with MongoDB databases.
+- MongoDB offers official and community-supported drivers for various programming languages.
+- Drivers provide APIs tailored to specific programming languages.
+- https://www.mongodb.com/docs/drivers
+
+- Languages supported by MongoDb are :  
+-- C  
+-- C++  
+-- C#  
+-- Go  
+-- Java  
+-- Kotlin  
+-- Node.js  
+-- PHP  
+-- Python  
+-- Ruby  
+-- Rust  
+-- Scala  
+-- Swift  
+-- Typescript  
+
+
+
+
+
+
+
+### Working with Node.js MongoDB Drivers
+
+- Download and install Node.js from official Node.js website.
+- Create a node.js project using npm init -y
+- install mongodb driver using npm install mongodb.
+- https://www.npmjs.com/package/mongodb
+- Create a connection with MongoDB database and start working with it.
+
+
+
+
+
+
+
+
+
+## Working with mongoose
+
+- It is an Object Data Modeling (ODM) library for MongoDB and Node.js.
+- It makes MongoDB interaction more straightforward and organized.
+- It provides a structured, schema-based data modeling approach.
+- Repository : github.com/Automattic/mongoose
+
+
+
+
+### Why mongoose instead of official driver ?
+
+- Structured schemas
+- Validation 
+- Relationships
+- MiddleWare
+- Complex Queries
