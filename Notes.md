@@ -864,6 +864,17 @@ Organization -> Projects -> Clusters -> Database -> Collections -> Documents
 
 
 
+### Getting started with Node.js MongoDB Driver
+
+- Connect to MongoDB server. Use the MongoCLient class and a valid URI to establish a connection to the MongoDB server.
+- Select a database : Access a specific database using the client.db(databaseName) method.
+- Access a collection : Retrieve a collection reference using the db.ccollection(collectionName) method.
+- Perform Operations : Perform CRUD operations like querying, inserting, updating and deleting documents within the collection.
+- Close Connection : Safely close the connection using the client.close() method when done
+
+
+
+
 
 
 
@@ -873,6 +884,7 @@ Organization -> Projects -> Clusters -> Database -> Collections -> Documents
 - It makes MongoDB interaction more straightforward and organized.
 - It provides a structured, schema-based data modeling approach.
 - Repository : github.com/Automattic/mongoose
+
 
 
 
