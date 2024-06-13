@@ -22,6 +22,7 @@ const salesSchema = new mongoose.Schema({
 
 
 // We need to now create a model
+// here, the sale will automatically get saved as plural in the mongodb.
 const Sales = new mongoose.model('sale', salesSchema)
 
 
