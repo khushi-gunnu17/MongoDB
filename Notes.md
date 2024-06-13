@@ -14,7 +14,7 @@
 
 
 ## Advanced 
-- Introduction to indexex
+- Introduction to indexes
 - Creating and managing Indexes
 - Understanding the Aggregation Framework  
 -- Introdction to aggregation  
@@ -44,7 +44,7 @@
 - They provide flexibility in data storage, allowing varied data types and structures.
 - Ideal for applications with dynamic or evolving data models.
 - CMS, Social Media Platforms, Gaming
-- Examples : Raddis, Cassandra, MongoDb
+- Examples : Redis, Cassandra, MongoDb
 
 
 ## Terminologies
