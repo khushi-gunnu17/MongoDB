@@ -43,7 +43,7 @@
 - Nosql databases are non-relational databases.
 - They provide flexibility in data storage, allowing varied data types and structures.
 - Ideal for applications with dynamic or evolving data models.
-- CMS, Social Media Platforms, Gaming
+- CMS (Content Management System) , Social Media Platforms, Gaming
 - Examples : Redis, Cassandra, MongoDb
 
 
@@ -80,8 +80,8 @@ WiredTiger or MMAP1
 
 ## Commands
 - mongosh   (to connect to the server)
-- show dbs (displays all teh databases)
-- use (database-name)  (to create a new database)
+- show dbs (displays all the databases)
+- use (database-name)  (to create a new database or use an existing database)
 - db.dropDatabase()
 
 - show collections
@@ -232,19 +232,19 @@ db.data.find({'age' : {$gt:18}, 'name' : 'Prachi desai'})       // mongodb impli
 
 - Cursors in mongoDb are used to efficiently retrieve large result sets from queries, providing control over the data retrieval process.
 
-- MongoDB retrieves query results in batches using cursors.
+-- MongoDB retrieves query results in batches using cursors.
 
-- Cursors are a pointer to the result set on the server.
+-- Cursors are a pointer to the result set on the server.
 
-- Cursors are used to iterate through query results.
+-- Cursors are used to iterate through query results.
 
 - Automatic Batching
 
-- MongoDB retrieves query results in batches not all set at once.
+-- MongoDB retrieves query results in batches not all set at once.
 
-- Default batch size is 101 documents.
+-- Default batch size is 101 documents.
 
-- This improves memory efficiency and 
+-- This improves memory efficiency and 
 
 - cursor methods := count(), limit(), skip(), sort()
 
@@ -288,8 +288,16 @@ db.data.find({'age' : {$gt:18}, 'name' : 'Prachi desai'})       // mongodb impli
 > {$expr : {operator : [field, value] } }
 
 - Example : 
-> db.collection-name.find( {$expr : {$gt : ['$price', 1340]} } )
+> db.sales.find( {$expr : {$gt : ['$price', 1340]} } )
 
+> db.sales.find( { $expr : {$gt : [{$multiply : ['$quantity', '$price'] }, '$targetprice' ] } } )
+
+
+
+<!-- these both examples down below not working as expected , they both are giving interchange values for the query -->
+> db.sales.find( { $expr : {$gt : [{$add : ['$quantity', '$price'] }, '$targetprice' ] } } )    
+
+> db.sales.find( { $expr : {$lt : [{$add : ['$quantity', '$price'] }, '$targetprice' ] } } )
 
 
 
@@ -320,7 +328,16 @@ db.data.find({'age' : {$gt:18}, 'name' : 'Prachi desai'})       // mongodb impli
 
 
 - Example :  
-db.data.find({'comments' : {$size : 1}})
+> db.data.find({'comments' : {$size : 2}})
+
+> db.data.find( {'comments' : {$exists : false}} )
+
+> db.data.find( {'comments' : {$exists : true}, age : {$eq : 19} } )
+
+<!-- it checks if the datatype is of a certain type and then perform the operations on it according to the given condition -->
+> db.data.find( {'comments' : {$type : 2 }, age : {$eq : 19} } )
+
+> db.data.find( {'comments' : {$type : 'string' }, age : {$eq : 19} } )
 
 
 
@@ -335,6 +352,24 @@ db.data.find({'comments' : {$size : 1}})
 - To include fields, use projection with a value of 0 for the fields you want to exclude.
 - You cannot include and exclude fields simultaneously in the same query projection.
 
+- Example : 
+
+>  db.data.find( {'comments' : {$size : 2 } }, {comments : 1, _id : 0} )
+
+> students> db.data.find( {'comments' : {$size : 2 } }, {comments : 1, age : 1, _id : 0} )  
+Output :  
+[  
+  {  
+    age: 21,  
+    comments: [  
+      { value: 'good', size: 'cute' },  
+      { value: 'friendly', size: 'does not matter' }  
+    ]
+  }
+]  
+students> db.data.find( {'comments' : {$size : 2 } }, {comments : 1, age : 0, _id : 0} )
+MongoServerError[Location31254]: Cannot do exclusion on field age in inclusion projection
+
 
 
 
@@ -344,16 +379,31 @@ db.data.find({'comments' : {$size : 1}})
 ## Embedded Documents
 - Query documents inside embedded documents using dot notation.
 - syntax : db.collection.find({ "parent.child" : value })
+- Example : 
+> db.data.find( { 'comments.value' : 'good' } )
+
+> db.data.find( { 'comments.value' : 'good', 'age' : {$gt : 19}  } )
+
+
 
 ### $all vs $elemMatch
 - The $all operator selects the documents where the value of a field is an array that contains all the spcified elements.  
--- syntax : {field : {$all : [value1, value2, ...] } }  
+- syntax : {field : {$all : [value1, value2, ...] } }  
 -- db.data.find({'comments.value' : {$all : ["mid", "mid"] } })
+
+- Example :
+> db.data.find( { 'comments.value' : {$all : ['good', 'friendly'] } } )
 
 
 - The $elemMatch operator matches documents that contain an array field with at least one element that matxhes all the specified query criteria.  
--- syntax : {field : {$elemMatch : {quer1, query2, ...} } }
--- db.data.find({'comments' : {$elemMatch : {"value" : "mid", 'size' : 'too big'} } })
+- syntax : {field : {$elemMatch : {quer1, query2, ...} } }
+- Example : 
+
+> db.data.find({'comments' : {$elemMatch : {"value" : "mid", 'size' : 'too big'} } })
+
+> db.data.find( {'comments' : {$elemMatch : {'value' : 'good', 'size' : 'cute'} } } )
+
+
 
 
 
@@ -372,6 +422,8 @@ db.data.find({'comments' : {$size : 1}})
     {filter},  
     {$set : { existing field : newValue, //... }, }  
 )
+
+
 
 
 
@@ -404,7 +456,8 @@ example :
 
 > db.collctionName.updateOne(  
     {filter}, 
-    {$pop : {arrayField : value} }  
+    {$pop : {arrayField : value} }    
+    <!-- either number 1 or -1 in the value field -->
 )
 
 > Example :   
@@ -444,11 +497,13 @@ to remove a document from a collection.
 
 
 
+
+
 ## Indexes in MongoDb
 
 ### What are indexes ?
 
--- Indexes are specialized data structures that optimize data retrieval speed in MongoDB.  
+-> Indexes are specialized data structures that optimize data retrieval speed in MongoDB.  
 -> Indexes store a fraction of data in a more searchable format.  
 -> They enable MongoDB to locate data faster during queries.  
 -> Indexes are separate from collections and multiple indexes can exist per collection.
@@ -502,8 +557,10 @@ _id is automatically added by mongodb and it's a default unique index.
 
 - db.collection_name.createIndex( {field : 'text'} )
 
+<!-- this query not practised -->
 - db.collection_name.find( {$text : {$search : 'keyword'} } )   
--- searching using index is aster than $regex searching.    
+
+-- searching using index is faster than $regex searching.   
 -- db.collection_name.find( {field : {$regex : 'air'} } )
 
 
@@ -535,7 +592,7 @@ _id is automatically added by mongodb and it's a default unique index.
 - Benefits :  
 -> Aggregating Data : Complex calculations and operations are possible.  
 -> Advanced Transfrmations : data can be combined, reshaped and computed for insights.  
-->  Efficient Processing : Aggreggation handles large datasets efficiently.
+-> Efficient Processing : Aggreggation handles large datasets efficiently.
 
 
 
@@ -576,6 +633,14 @@ output :
   { _id: 55, totalPrice: 2 }  
 ]
 
+-- db.sales.aggregate([  
+    {  
+        $group : {  
+            _id : '$price',  
+            totalPrice : {$sum : '$quantity'}  
+        }  
+    }
+])
 
 - db.sales.aggregate([ {$match : {price : {'$gt': 30}} }, {$group : { _id: '$price' , totalPrice : {$sum:1} } } ] )
 
@@ -732,16 +797,18 @@ output :
 }
 
 - Example :  db.sales.aggregate([   
-    {$project :   
+    {   
+        $project :      
         {   
             quantity : 1,
             values :   
-            {$filter :   
-                {  
-                    input : '$values',   
-                    as : 'value',   
-                    cond : {$gte : ['$$value', 50] }   
-                }   
+            {  
+                $filter :    
+                    {    
+                        input : '$values',   
+                        as : 'value',   
+                        cond : {$gte : ['$$value', 50] }   
+                    }   
             }    
         }
     } 
